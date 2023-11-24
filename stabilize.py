@@ -26,9 +26,8 @@ from joblib import Parallel, delayed
 
 #### DATA loading
 def check_out_dic(path,out_path="out/"):
-
     out_path = out_path+path.split("/")[-2]+"/"
-    Path(out_path).mkdir(exist_ok=True)
+    Path(out_path).mkdir(exist_ok=True,parents=True)
     return out_path
 
 def check_model(model_path):
