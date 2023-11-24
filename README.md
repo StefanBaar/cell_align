@@ -11,8 +11,9 @@ This approach for jitter and drift correction is based on ["RAFT: Recurrent All 
 - **requirements:**
    - python 3.6+ \
      `pip3 install gdown torch torchvision torchaudio opencv-contrib-python` \
-     `pip3 install scipy tqdm path imageio scikit-image joblib` \
-
+     `pip3 install scipy tqdm path imageio scikit-image joblib` \\
+     `sudo apt instal ffmpeg` (ubuntu) \
+     `brew install ffmpeg` (mac) \\
    - Download \
      `git clone https://github.com/StefanBaar/cell_align` \
      `cd cell_align`
@@ -38,6 +39,9 @@ This approach for jitter and drift correction is based on ["RAFT: Recurrent All 
 
 ## TODO:
 - Model: replace old sintel model url
+- Cuda: confirm cuda works
+- CPU: confirm multi core
+- video conversion
 
 
 <!--- This repo requires RAFT

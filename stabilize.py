@@ -17,9 +17,7 @@ import torch
 
 import cv2
 
-from skimage import registration
-
-
+from skimage import registration, transform
 
 from joblib import Parallel, delayed
 
@@ -27,6 +25,7 @@ from joblib import Parallel, delayed
 #### DATA loading
 def check_out_dic(path,out_path="out/"):
     out_path = out_path+path.split("/")[-2]+"/"
+    Path(out_path+"images/").mkdir(exist_ok=True,parents=True)
     Path(out_path).mkdir(exist_ok=True,parents=True)
     return out_path
 
@@ -89,21 +88,56 @@ def estimate_trafo(IMOBJCT,IND,model,iters=11,device="cuda:0"):
 
 
 def get_trafos_seriel(IMOBJCT,model,dev="cuda:0",iters=11):
-    DYX = []
+    DYX = [[0,0]]
     for IND in tqdm(range(IMOBJCT[2]-1)):
         DY,DX = estimate_trafo(IMOBJCT,IND,model,iters=iters,device=dev)
         DYX.append([DY,DX])
     return np.stack(DYX)
 #### apply Trafo
 
+def apply_trafo(image, dyx, order=5):
+    move_tf  = transform.AffineTransform(translation=(dyx[1],dyx[0]))
+    image_tf = transform.warp(image,
+                              move_tf.inverse,
+                              order          = order,
+                              preserve_range = True,
+                              cval           = np.median(image))
+    return image_tf
 
+def pad_image(image,pad):
+    new_image = np.pad(image,
+                       ((pad,pad),(pad,pad),(0,0)),
+                       mode="median")
+    return new_image
 
-#### write data output
+def align_images(IMOBJCT, DYX, out_path, frame_mode="pad", order=5):
+
+    #pad        = (np.abs(DYX).max(0)).astype(int)
+    pad        = int(np.abs(DYX).max())
+    new_images = []
+    for i in tqdm(range(IMOBJCT[2])):
+
+        frame = get_frame(IMOBJCT, i)
+
+        if frame_mode=="pad":
+            frame = pad_image(frame,pad)
+
+        elif frame_mode=="crop":
+            frame = frame[pad:-pad,pad:-pad]
+        else:
+            pass
+
+        frame = apply_trafo(frame, DYX[i], order=order)
+
+        cv2.imwrite(out_path+"images/"+str(10000001+i)[1:]+".png",frame)
+
 
 if __name__ == '__main__':
 
     dev        = "cpu" ## "cuda:0"
     iters      = 11
+    order      = 5
+    mode       = None #"crop","pad"
     path       = "samples/F9-1(MIT14v2-4ng)"
     model_path = "MODELS/raftsintel.pth"
 
@@ -111,7 +145,6 @@ if __name__ == '__main__':
         path += "/"
 
     out_path = check_out_dic(path)
-
 
     #check_model(model_path)
 
@@ -122,13 +155,20 @@ if __name__ == '__main__':
     IMOBJCT = get_source(path)
 
     print("Estimating displacement")
+    DYX  = get_trafos_seriel(IMOBJCT,model,dev=dev,iters=iters)
+    #### cumsum to align al images in relation to the first frame
+    DYXs = np.cumsum(DYX,0)
+    #### subtract the median of x and y for centering the drift corrected
+    DYXm = DYX-np.median(DYXs,0)
 
-
-    DYX = get_trafos_seriel(IMOBJCT,model,dev=dev,iters=iters)
     #print(DYX)
 
     np.savetxt(out_path+"dyx.txt", DYX)
+    np.savetxt(out_path+"dyx_cumsum.txt", DYXs)
+    np.savetxt(out_path+"dyx_median.txt", DYXm)
 
+    print("Apply transformation")
+    align_images(IMOBJCT, -DYXm, out_path, frame_mode=mode, order=order)
 
 
 
