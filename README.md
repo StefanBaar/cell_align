@@ -9,11 +9,13 @@ This approach for jitter and drift correction is based on ["RAFT: Recurrent All 
 ## Install
 
 - **requirements:**
--- python 3.6+ \
-   `pip3 install gdown torch torchvision torchaudio opencv-contrib-python` \
-   `pip3 install scipy tqdm path imageio scikit-image joblib`
--- `git clone https://github.com/StefanBaar/cell_align`
--- `cd cell_align`
+   - python 3.6+ \
+     `pip3 install gdown torch torchvision torchaudio opencv-contrib-python` \
+     `pip3 install scipy tqdm path imageio scikit-image joblib` \
+
+   - Download \
+     `git clone https://github.com/StefanBaar/cell_align` \
+     `cd cell_align`
 
 ## Running
    ```bash
