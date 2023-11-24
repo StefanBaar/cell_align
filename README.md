@@ -4,11 +4,22 @@ Command-line tool and supplementary material to the paper: "Fiduciary-free frame
 
 ![overview](images/idea.svg)
 
-This approach for jitter and drift correction is based on "[RAFT: Recurrent All Pairs Field Transforms for Optical Flow](https://arxiv.org/pdf/2003.12039.pdf)<br/>
-ECCV 2020 <br/>" by Zachary Teed and Jia Deng (ECCV 2020).
+This approach for jitter and drift correction is based on ["RAFT: Recurrent All Pairs Field Transforms for Optical Flow"](https://arxiv.org/pdf/2003.12039.pdf)by Zachary Teed and Jia Deng (ECCV 2020).
 
+## Install
 
-## samples
+- **requirements:**
+-- python 3.6+ \
+   `pip3 install gdown torch torchvision torchaudio opencv-contrib-python` \
+   `pip3 install scipy tqdm path imageio scikit-image joblib`
+-- `git clone https://github.com/StefanBaar/cell_align`
+-- `cd cell_align`
+
+## Running
+   ```bash
+   python3 stabilize.py [input path to image dic or video]
+   ```
+## Samples
 
 - DMSO (left: raw, right stabilized)
 
@@ -20,6 +31,11 @@ ECCV 2020 <br/>" by Zachary Teed and Jia Deng (ECCV 2020).
 
 [![KNK808](https://img.youtube.com/vi/OyPupI3irXw/hqdefault.jpg)](https://youtu.be/OyPupI3irXw)
 
+
+
+
+## TODO:
+- Model: replace old sintel model url
 
 
 <!--- This repo requires RAFT
