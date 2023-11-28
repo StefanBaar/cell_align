@@ -2,7 +2,7 @@
 
 Command-line tool and supplementary material to the paper: "Fiduciary-free frame alignment for robust time-lapse drift correction estimation in multi-sample cell microscopy"
 
-![overview](images/idea.svg)
+![overview](images/overview.svg)
 
 This approach for jitter and drift correction is based on ["RAFT: Recurrent All Pairs Field Transforms for Optical Flow"](https://arxiv.org/pdf/2003.12039.pdf)by Zachary Teed and Jia Deng (ECCV 2020).
 
